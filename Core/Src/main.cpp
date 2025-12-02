@@ -6,10 +6,11 @@ int main(void) {
     SharedMemory::start();
 #endif
 
-    SCB_DisableDCache();
+    
 
     // DigitalOutput led_on(PB0);
     STLIB::start();
+    SCB_DisableDCache();
 
     uint8_t data_buffer[256];
     auto mdma_channel = MDMA::inscribe(data_buffer);
@@ -29,10 +30,11 @@ int main(void) {
     source_node->set_next(dest_node->get_node());
 
     auto promise = Promise::inscribe();
-    MDMA::transfer_list(mdma_channel, source_node, promise);
     promise->then([](void*){
         while(1);
     });
+    MDMA::transfer_list(mdma_channel, source_node, promise);
+
 
     // Time::register_low_precision_alarm(100, [&]() { led_on.toggle(); 
     // });
